@@ -1417,6 +1417,11 @@ cartTotal.textContent = `₹${total}`;
 
 cartItems.innerHTML = html;
   }
+                    document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', function() {
+        alert('Button clicked!');
+    });
+});         
 </script>
 </body>
 </html>
