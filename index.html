@@ -1,168 +1,336 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8"> 
+
+<meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Farmers Marketplace Hub</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <script>
+
 tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        farm: {
-          50: "#f2fbea",
-          100: "#e4f5d3",
-          500: "#5b9c35",
-          600: "#4b862b",
-          700: "#396d22",
-          800: "#2c541c",
-          900: "#1d3814"
+    theme: {
+        extend: {
+            colors: {
+                farm: {
+                    50: "#f2fbea",
+                    100: "#e4f5d3",
+                    500: "#5b9c35",
+                    600: "#4b862b",
+                    700: "#396d22",
+                    800: "#2c541c",
+                    900: "#1d3814"
+                }
+            }
         }
-      }
     }
-  }
-}
+};
+
 </script>
 
 <style>
-html{scroll-behavior:smooth}
-body{font-family:Arial,sans-serif}
-.page{display:none}
-.page.active{display:block}
-.card{transition:.25s}
-.card:hover{transform:translateY(-5px)}
-.modal{display:none}
-.modal.show{display:flex}
-.toast{transform:translateX(120%);transition:.3s}
-.toast.show{transform:translateX(0)}
-.mobile-menu{display:none}
-.mobile-menu.open{display:block}
-.hero-pattern{
-background:
-radial-gradient(circle at 10% 20%,rgba(255,255,255,.15) 0 40px,transparent 41px),
-radial-gradient(circle at 90% 70%,rgba(255,255,255,.12) 0 70px,transparent 71px),
-linear-gradient(135deg,#24551c,#4b862b,#78ad3c);
+
+html {
+    scroll-behavior: smooth;
 }
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.card {
+    transition: .25s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.modal {
+    display: none;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    outline: none;
+    background: white;
+}
+
+.input:focus {
+    border-color: #4b862b;
+    box-shadow: 0 0 0 3px rgba(75,134,43,.15);
+}
+
+.hero {
+    background:
+    radial-gradient(circle at 10% 20%,rgba(255,255,255,.12) 0 50px,transparent 51px),
+    radial-gradient(circle at 90% 70%,rgba(255,255,255,.12) 0 80px,transparent 81px),
+    linear-gradient(135deg,#24551c,#4b862b,#78ad3c);
+}
+
+.toast {
+    transform: translateX(130%);
+    transition: .3s;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.mobile-menu {
+    display:none;
+}
+
+.mobile-menu.open {
+    display:block;
+}
+
+.notification {
+    animation: pulseBox 1s infinite;
+}
+
+@keyframes pulseBox {
+
+    0%,100% {
+        box-shadow: 0 0 0 0 rgba(34,197,94,.4);
+    }
+
+    50% {
+        box-shadow: 0 0 0 8px rgba(34,197,94,0);
+    }
+
+}
+
 </style>
 
+
 <!-- FIREBASE -->
+
 <script type="module">
-import {initializeApp}
+
+import { initializeApp }
+
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
-getDatabase,
-ref,
-push,
-set,
-onValue
+
+    getDatabase,
+    ref,
+    push,
+    set,
+    update,
+    onValue
+
 }
+
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-const firebaseConfig={
-apiKey:"AIzaSyD02l_-8ooi3JX_IvbuwnQveegIkiqqHsw",
-authDomain:"farmersmarketplacehub.firebaseapp.com",
-databaseURL:"https://farmersmarketplacehub-default-rtdb.firebaseio.com",
-projectId:"farmersmarketplacehub",
-storageBucket:"farmersmarketplacehub.firebasestorage.app",
-messagingSenderId:"884861893437",
-appId:"1:884861893437:web:7a578f3ccb973981aea354",
-measurementId:"G-FMRB4CRTD0"
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyD02l_-8ooi3JX_IvbuwnQveegIkiqqHsw",
+
+    authDomain: "farmersmarketplacehub.firebaseapp.com",
+
+    databaseURL: "https://farmersmarketplacehub-default-rtdb.firebaseio.com",
+
+    projectId: "farmersmarketplacehub",
+
+    storageBucket: "farmersmarketplacehub.firebasestorage.app",
+
+    messagingSenderId: "884861893437",
+
+    appId: "1:884861893437:web:7a578f3ccb973981aea354",
+
+    measurementId: "G-FMRB4CRTD0"
+
 };
 
-const app=initializeApp(firebaseConfig);
-const db=getDatabase(app);
 
-window.db=db;
-window.dbRef=ref;
-window.dbPush=push;
-window.dbSet=set;
-window.dbOnValue=onValue;
+const app = initializeApp(firebaseConfig);
 
-console.log("Firebase connected");
+const db = getDatabase(app);
+
+window.firebaseDB = db;
+
+window.firebaseRef = ref;
+
+window.firebasePush = push;
+
+window.firebaseSet = set;
+
+window.firebaseUpdate = update;
+
+window.firebaseOnValue = onValue;
+
+console.log("Firebase connected successfully");
+
 </script>
+
 </head>
+
 
 <body class="bg-green-50 text-gray-800">
 
+
 <!-- TOAST -->
+
 <div id="toast"
 class="toast fixed top-5 right-5 z-[9999] bg-white shadow-2xl rounded-2xl px-5 py-4 border-l-4 border-green-600">
-<div id="toastText" class="font-semibold"></div>
+
+    <div id="toastText" class="font-semibold"></div>
+
 </div>
 
+
 <!-- HEADER -->
+
 <header class="sticky top-0 z-50 bg-white shadow-md">
 
 <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
 
-<button onclick="go('home')"
-class="flex items-center gap-2">
+
+<button onclick="go('home')" class="flex items-center gap-2">
+
 <span class="text-3xl">🌾</span>
+
 <div class="text-left">
+
 <div class="font-black text-green-800 text-lg md:text-xl">
 Farmers Marketplace
 </div>
-<div class="text-xs text-green-600">HUB</div>
+
+<div class="text-xs text-green-600">
+HUB
 </div>
+
+</div>
+
 </button>
 
-<nav class="hidden lg:flex items-center gap-5 text-sm font-semibold">
 
-<button onclick="go('home')" class="navBtn hover:text-green-600">Home</button>
-<button onclick="go('products')" class="navBtn hover:text-green-600">Products</button>
-<button onclick="go('farmers')" class="navBtn hover:text-green-600">Farmers</button>
-<button onclick="go('dashboard')" class="navBtn hover:text-green-600">Dashboard</button>
-<button onclick="go('orders')" class="navBtn hover:text-green-600">Orders</button>
-<button onclick="go('contact')" class="navBtn hover:text-green-600">Contact</button>
+<nav class="hidden lg:flex items-center gap-4 text-sm font-semibold">
+
+<button onclick="go('home')" class="hover:text-green-600">
+Home
+</button>
+
+<button onclick="go('products')" class="hover:text-green-600">
+Products
+</button>
+
+<button onclick="go('farmers')" class="hover:text-green-600">
+Farmers
+</button>
+
+<button onclick="go('orders')" class="hover:text-green-600">
+My Orders
+</button>
+
+<button onclick="go('admin')" class="hover:text-green-600">
+Admin
+</button>
+
+<button onclick="go('contact')" class="hover:text-green-600">
+Contact
+</button>
+
 
 <button onclick="openCart()"
 class="relative bg-green-700 text-white px-4 py-2 rounded-full">
+
 🛒 Cart
+
 <span id="cartCount"
 class="absolute -top-2 -right-2 bg-yellow-400 text-black rounded-full w-6 h-6 text-xs flex items-center justify-center">
 0
 </span>
+
 </button>
+
 
 <button onclick="openLogin()"
 id="loginBtn"
 class="border-2 border-green-700 text-green-700 px-4 py-2 rounded-full">
+
 Login
+
 </button>
 
 </nav>
 
+
 <button onclick="toggleMenu()"
 class="lg:hidden text-3xl text-green-800">
+
 ☰
+
 </button>
 
 </div>
 
+
 <div id="mobileMenu"
 class="mobile-menu lg:hidden bg-green-900 text-white px-5 pb-5">
 
-<button onclick="go('home');toggleMenu()" class="block py-3 w-full text-left">🏠 Home</button>
-<button onclick="go('products');toggleMenu()" class="block py-3 w-full text-left">🛍️ Products</button>
-<button onclick="go('farmers');toggleMenu()" class="block py-3 w-full text-left">👨‍🌾 Farmers</button>
-<button onclick="go('dashboard');toggleMenu()" class="block py-3 w-full text-left">📊 Dashboard</button>
-<button onclick="go('orders');toggleMenu()" class="block py-3 w-full text-left">📦 Orders</button>
-<button onclick="go('contact');toggleMenu()" class="block py-3 w-full text-left">📞 Contact</button>
-<button onclick="openCart();toggleMenu()" class="block py-3 w-full text-left">🛒 Cart</button>
-<button onclick="openLogin();toggleMenu()" class="block py-3 w-full text-left">👤 Login</button>
+<button onclick="go('home');toggleMenu()" class="block py-3 w-full text-left">
+🏠 Home
+</button>
+
+<button onclick="go('products');toggleMenu()" class="block py-3 w-full text-left">
+🛍️ Products
+</button>
+
+<button onclick="go('farmers');toggleMenu()" class="block py-3 w-full text-left">
+👨‍🌾 Farmers
+</button>
+
+<button onclick="go('orders');toggleMenu()" class="block py-3 w-full text-left">
+📦 My Orders
+</button>
+
+<button onclick="go('admin');toggleMenu()" class="block py-3 w-full text-left">
+🔐 Admin
+</button>
+
+<button onclick="go('contact');toggleMenu()" class="block py-3 w-full text-left">
+📞 Contact
+</button>
+
+<button onclick="openCart();toggleMenu()" class="block py-3 w-full text-left">
+🛒 Cart
+</button>
 
 </div>
+
 </header>
 
 
 <!-- HOME -->
+
 <section id="home" class="page active">
 
-<div class="hero-pattern text-white">
+<div class="hero text-white">
 
 <div class="max-w-7xl mx-auto px-5 py-20 md:py-28">
 
@@ -173,116 +341,207 @@ class="mobile-menu lg:hidden bg-green-900 text-white px-5 pb-5">
 </span>
 
 <h1 class="text-4xl md:text-6xl font-black leading-tight">
+
 Fresh From Farm.
+
 <br>
-<span class="text-yellow-300">Direct To You.</span>
+
+<span class="text-yellow-300">
+Direct To You.
+</span>
+
 </h1>
 
-<p class="text-lg md:text-xl mt-6 text-green-50 leading-relaxed">
-Buy fresh agricultural products directly from local farmers
+<p class="text-lg md:text-xl mt-6 text-green-50">
+
+Buy fresh agricultural products directly from farmers
 and support the farming community.
+
 </p>
 
 <div class="flex flex-wrap gap-4 mt-8">
 
 <button onclick="go('products')"
-class="bg-yellow-400 text-green-950 font-bold px-7 py-4 rounded-full shadow-lg hover:scale-105 transition">
+class="bg-yellow-400 text-green-950 font-bold px-7 py-4 rounded-full">
+
 🛍️ Shop Now
+
 </button>
 
 <button onclick="go('farmers')"
-class="bg-white/15 border border-white px-7 py-4 rounded-full font-bold hover:bg-white hover:text-green-800 transition">
+class="bg-white/15 border border-white px-7 py-4 rounded-full font-bold">
+
 👨‍🌾 Join as Farmer
+
 </button>
 
 </div>
 
 </div>
-</div>
+
 </div>
 
+</div>
 
-<!-- STATS -->
 
 <div class="max-w-6xl mx-auto px-5 -mt-8 relative">
 
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 
+
 <div class="bg-white rounded-2xl shadow-lg p-5 text-center">
+
 <div class="text-3xl">👨‍🌾</div>
-<div id="farmerStat" class="text-2xl font-black text-green-700">0</div>
-<div class="text-gray-500">Farmers</div>
+
+<div id="farmerStat"
+class="text-2xl font-black text-green-700">
+0
 </div>
 
+<div class="text-gray-500">
+Farmers
+</div>
+
+</div>
+
+
 <div class="bg-white rounded-2xl shadow-lg p-5 text-center">
+
 <div class="text-3xl">🥬</div>
-<div class="text-2xl font-black text-green-700">50+</div>
-<div class="text-gray-500">Products</div>
+
+<div id="productStat"
+class="text-2xl font-black text-green-700">
+0
 </div>
 
+<div class="text-gray-500">
+Products
+</div>
+
+</div>
+
+
 <div class="bg-white rounded-2xl shadow-lg p-5 text-center">
+
 <div class="text-3xl">📦</div>
-<div id="orderStat" class="text-2xl font-black text-green-700">0</div>
-<div class="text-gray-500">Orders</div>
+
+<div id="orderStat"
+class="text-2xl font-black text-green-700">
+0
 </div>
+
+<div class="text-gray-500">
+Orders
+</div>
+
+</div>
+
 
 <div class="bg-white rounded-2xl shadow-lg p-5 text-center">
+
 <div class="text-3xl">⭐</div>
-<div class="text-2xl font-black text-green-700">4.9</div>
-<div class="text-gray-500">Rating</div>
+
+<div class="text-2xl font-black text-green-700">
+4.9
+</div>
+
+<div class="text-gray-500">
+Rating
 </div>
 
 </div>
+
 </div>
 
+</div>
 
-<!-- WHY US -->
 
 <div class="max-w-7xl mx-auto px-5 py-20">
 
 <div class="text-center mb-12">
 
-<p class="text-green-600 font-bold">WHY CHOOSE US</p>
+<p class="text-green-600 font-bold">
+WHY CHOOSE US
+</p>
 
-<h2 class="text-3xl md:text-4xl font-black text-green-900 mt-2">
+<h2 class="text-3xl md:text-4xl font-black text-green-900">
 Everything You Need In One Place
 </h2>
 
 </div>
 
+
 <div class="grid md:grid-cols-4 gap-6">
 
+
 <div class="card bg-white rounded-3xl p-7 shadow">
+
 <div class="text-5xl">🌱</div>
-<h3 class="text-xl font-bold mt-5">Farm Fresh</h3>
-<p class="text-gray-500 mt-2">Fresh products sourced directly from farms.</p>
+
+<h3 class="text-xl font-bold mt-5">
+Farm Fresh
+</h3>
+
+<p class="text-gray-500 mt-2">
+Fresh products sourced directly from farms.
+</p>
+
 </div>
 
+
 <div class="card bg-white rounded-3xl p-7 shadow">
+
 <div class="text-5xl">🤝</div>
-<h3 class="text-xl font-bold mt-5">Direct Connection</h3>
-<p class="text-gray-500 mt-2">Connect farmers directly with customers.</p>
+
+<h3 class="text-xl font-bold mt-5">
+Direct Connection
+</h3>
+
+<p class="text-gray-500 mt-2">
+Connect farmers directly with customers.
+</p>
+
 </div>
 
+
 <div class="card bg-white rounded-3xl p-7 shadow">
+
 <div class="text-5xl">💰</div>
-<h3 class="text-xl font-bold mt-5">Fair Prices</h3>
-<p class="text-gray-500 mt-2">Better value for farmers and customers.</p>
+
+<h3 class="text-xl font-bold mt-5">
+Fair Prices
+</h3>
+
+<p class="text-gray-500 mt-2">
+Better value for farmers and customers.
+</p>
+
 </div>
+
 
 <div class="card bg-white rounded-3xl p-7 shadow">
+
 <div class="text-5xl">🚚</div>
-<h3 class="text-xl font-bold mt-5">Easy Ordering</h3>
-<p class="text-gray-500 mt-2">Simple and convenient digital ordering.</p>
+
+<h3 class="text-xl font-bold mt-5">
+Easy Delivery
+</h3>
+
+<p class="text-gray-500 mt-2">
+Simple and convenient digital ordering.
+</p>
+
 </div>
 
 </div>
+
 </div>
 
 </section>
 
 
 <!-- PRODUCTS -->
+
 <section id="products" class="page">
 
 <div class="max-w-7xl mx-auto px-5 py-12">
@@ -290,42 +549,53 @@ Everything You Need In One Place
 <div class="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-10">
 
 <div>
-<p class="text-green-600 font-bold">MARKETPLACE</p>
-<h2 class="text-4xl font-black text-green-900">Fresh Products</h2>
-<p class="text-gray-500 mt-2">Choose your favourite farm products.</p>
+
+<p class="text-green-600 font-bold">
+MARKETPLACE
+</p>
+
+<h2 class="text-4xl font-black text-green-900">
+Fresh Products
+</h2>
+
+<p class="text-gray-500 mt-2">
+Choose your favourite farm products.
+</p>
+
 </div>
 
-<div class="relative">
 <input id="search"
-oninput="filterProducts()"
+oninput="renderProducts()"
 placeholder="🔍 Search product..."
-class="w-full md:w-80 px-5 py-4 rounded-2xl border bg-white shadow-sm outline-none focus:ring-2 focus:ring-green-500">
-</div>
+class="w-full md:w-80 px-5 py-4 rounded-2xl border bg-white">
 
 </div>
 
-
-<!-- CATEGORY BUTTONS -->
 
 <div class="flex gap-3 overflow-x-auto pb-5">
 
-<button onclick="filterCategory('all')" class="cat bg-green-700 text-white px-5 py-2 rounded-full">
+<button onclick="setCategory('all')"
+class="bg-green-700 text-white px-5 py-2 rounded-full">
 All
 </button>
 
-<button onclick="filterCategory('vegetable')" class="cat bg-white px-5 py-2 rounded-full shadow">
+<button onclick="setCategory('vegetable')"
+class="bg-white px-5 py-2 rounded-full shadow">
 🥬 Vegetables
 </button>
 
-<button onclick="filterCategory('fruit')" class="cat bg-white px-5 py-2 rounded-full shadow">
+<button onclick="setCategory('fruit')"
+class="bg-white px-5 py-2 rounded-full shadow">
 🍎 Fruits
 </button>
 
-<button onclick="filterCategory('grain')" class="cat bg-white px-5 py-2 rounded-full shadow">
+<button onclick="setCategory('grain')"
+class="bg-white px-5 py-2 rounded-full shadow">
 🌾 Grains
 </button>
 
-<button onclick="filterCategory('dairy')" class="cat bg-white px-5 py-2 rounded-full shadow">
+<button onclick="setCategory('dairy')"
+class="bg-white px-5 py-2 rounded-full shadow">
 🥛 Dairy
 </button>
 
@@ -337,30 +607,31 @@ class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-5">
 </div>
 
 </div>
+
 </section>
 
 
 <!-- FARMERS -->
+
 <section id="farmers" class="page">
 
 <div class="max-w-6xl mx-auto px-5 py-12">
 
 <div class="text-center mb-10">
 
-<p class="text-green-600 font-bold">FOR FARMERS</p>
+<p class="text-green-600 font-bold">
+FOR FARMERS
+</p>
 
 <h2 class="text-4xl font-black text-green-900">
 Grow Your Business With Us
 </h2>
 
-<p class="text-gray-500 mt-3">
-Register as a farmer and reach more customers.
-</p>
-
 </div>
 
 
 <div class="grid md:grid-cols-2 gap-8">
+
 
 <div class="bg-white rounded-3xl shadow-xl p-7">
 
@@ -386,7 +657,9 @@ class="input mb-4">
 
 <button onclick="registerFarmer()"
 class="w-full bg-green-700 text-white py-4 rounded-xl font-bold">
+
 Register Now
+
 </button>
 
 </div>
@@ -404,7 +677,9 @@ Benefits For Farmers
 <span class="text-3xl">📈</span>
 <div>
 <b>More Customers</b>
-<p class="text-green-200 text-sm">Reach customers online.</p>
+<p class="text-green-200 text-sm">
+Reach customers online.
+</p>
 </div>
 </div>
 
@@ -412,7 +687,9 @@ Benefits For Farmers
 <span class="text-3xl">💵</span>
 <div>
 <b>Better Selling</b>
-<p class="text-green-200 text-sm">Sell your products directly.</p>
+<p class="text-green-200 text-sm">
+Sell your products directly.
+</p>
 </div>
 </div>
 
@@ -420,25 +697,18 @@ Benefits For Farmers
 <span class="text-3xl">📱</span>
 <div>
 <b>Digital Marketplace</b>
-<p class="text-green-200 text-sm">Manage your products digitally.</p>
-</div>
-</div>
-
-<div class="flex gap-4">
-<span class="text-3xl">🤝</span>
-<div>
-<b>Customer Connection</b>
-<p class="text-green-200 text-sm">Build direct relationships.</p>
+<p class="text-green-200 text-sm">
+Manage products digitally.
+</p>
 </div>
 </div>
 
 </div>
 
 </div>
+
 </div>
 
-
-<!-- ADD PRODUCT -->
 
 <div class="bg-white rounded-3xl shadow-xl p-7 mt-10">
 
@@ -454,15 +724,28 @@ class="input">
 
 <input id="newProductPrice"
 type="number"
-placeholder="Price per kg / litre"
+placeholder="Price"
 class="input">
 
 <select id="newProductCategory"
 class="input">
-<option value="vegetable">Vegetable</option>
-<option value="fruit">Fruit</option>
-<option value="grain">Grain</option>
-<option value="dairy">Dairy</option>
+
+<option value="vegetable">
+Vegetable
+</option>
+
+<option value="fruit">
+Fruit
+</option>
+
+<option value="grain">
+Grain
+</option>
+
+<option value="dairy">
+Dairy
+</option>
+
 </select>
 
 <input id="newProductFarmer"
@@ -473,106 +756,29 @@ class="input">
 
 <button onclick="addProduct()"
 class="mt-5 bg-green-700 text-white px-7 py-3 rounded-xl font-bold">
+
 Add Product
+
 </button>
 
 </div>
 
 </div>
-</section>
 
-
-<!-- DASHBOARD -->
-<section id="dashboard" class="page">
-
-<div class="max-w-7xl mx-auto px-5 py-12">
-
-<div class="mb-10">
-
-<p class="text-green-600 font-bold">OVERVIEW</p>
-
-<h2 class="text-4xl font-black text-green-900">
-📊 Marketplace Dashboard
-</h2>
-
-</div>
-
-<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-
-<div class="bg-white rounded-3xl shadow p-7">
-<p class="text-gray-500">Products</p>
-<h3 id="dashProducts" class="text-4xl font-black text-green-700 mt-2">0</h3>
-</div>
-
-<div class="bg-white rounded-3xl shadow p-7">
-<p class="text-gray-500">Farmers</p>
-<h3 id="dashFarmers" class="text-4xl font-black text-green-700 mt-2">0</h3>
-</div>
-
-<div class="bg-white rounded-3xl shadow p-7">
-<p class="text-gray-500">Orders</p>
-<h3 id="dashOrders" class="text-4xl font-black text-green-700 mt-2">0</h3>
-</div>
-
-<div class="bg-white rounded-3xl shadow p-7">
-<p class="text-gray-500">Cart Items</p>
-<h3 id="dashCart" class="text-4xl font-black text-green-700 mt-2">0</h3>
-</div>
-
-</div>
-
-
-<div class="bg-white rounded-3xl shadow-xl p-7 mt-8">
-
-<h3 class="text-2xl font-black text-green-800">
-Quick Actions
-</h3>
-
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-
-<button onclick="go('products')"
-class="p-5 rounded-2xl bg-green-50 hover:bg-green-100">
-🛍️
-<br>
-<span class="font-bold">Browse Products</span>
-</button>
-
-<button onclick="go('farmers')"
-class="p-5 rounded-2xl bg-yellow-50 hover:bg-yellow-100">
-👨‍🌾
-<br>
-<span class="font-bold">Add Farmer</span>
-</button>
-
-<button onclick="openCart()"
-class="p-5 rounded-2xl bg-blue-50 hover:bg-blue-100">
-🛒
-<br>
-<span class="font-bold">View Cart</span>
-</button>
-
-<button onclick="go('orders')"
-class="p-5 rounded-2xl bg-purple-50 hover:bg-purple-100">
-📦
-<br>
-<span class="font-bold">View Orders</span>
-</button>
-
-</div>
-</div>
-
-</div>
 </section>
 
 
 <!-- ORDERS -->
+
 <section id="orders" class="page">
 
 <div class="max-w-6xl mx-auto px-5 py-12">
 
 <div class="text-center mb-10">
 
-<p class="text-green-600 font-bold">MY ACTIVITY</p>
+<p class="text-green-600 font-bold">
+CUSTOMER AREA
+</p>
 
 <h2 class="text-4xl font-black text-green-900">
 📦 My Orders
@@ -583,17 +789,217 @@ class="p-5 rounded-2xl bg-purple-50 hover:bg-purple-100">
 <div id="ordersList"></div>
 
 </div>
+
+</section>
+
+
+<!-- ADMIN -->
+
+<section id="admin" class="page">
+
+
+<div id="adminLoginArea"
+class="max-w-md mx-auto px-5 py-16">
+
+<div class="bg-white rounded-3xl shadow-xl p-8">
+
+<div class="text-center">
+
+<div class="text-6xl">
+🔐
+</div>
+
+<h2 class="text-3xl font-black text-green-900 mt-4">
+Admin Login
+</h2>
+
+<p class="text-gray-500 mt-2">
+Manage customer orders
+</p>
+
+</div>
+
+<input id="adminEmail"
+type="email"
+placeholder="Admin Email"
+class="input mt-7">
+
+<input id="adminPassword"
+type="password"
+placeholder="Admin Password"
+class="input mt-4">
+
+<button onclick="adminLogin()"
+class="w-full bg-green-700 text-white py-4 rounded-xl font-bold mt-5">
+
+Login as Admin
+
+</button>
+
+<p class="text-xs text-gray-400 text-center mt-4">
+Demo: admin@farmershub.com / admin123
+</p>
+
+</div>
+
+</div>
+
+
+<div id="adminPanel"
+class="hidden max-w-7xl mx-auto px-5 py-12">
+
+
+<div class="flex flex-col md:flex-row justify-between gap-4 mb-8">
+
+<div>
+
+<p class="text-green-600 font-bold">
+ADMIN AREA
+</p>
+
+<h2 class="text-4xl font-black text-green-900">
+📊 Admin Dashboard
+</h2>
+
+</div>
+
+<button onclick="adminLogout()"
+class="bg-red-500 text-white px-6 py-3 rounded-xl font-bold h-fit">
+
+Logout
+
+</button>
+
+</div>
+
+
+<div id="newOrderAlert"
+class="hidden notification bg-green-700 text-white rounded-3xl p-5 mb-7">
+
+<div class="flex items-center justify-between gap-4">
+
+<div>
+
+<div class="font-black text-xl">
+🔔 New Order Received!
+</div>
+
+<div id="newOrderText">
+A customer has placed a new order.
+</div>
+
+</div>
+
+<button onclick="hideOrderAlert()"
+class="bg-white text-green-800 px-4 py-2 rounded-xl font-bold">
+
+View
+
+</button>
+
+</div>
+
+</div>
+
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+
+
+<div class="bg-white rounded-3xl shadow p-6">
+
+<p class="text-gray-500">
+Total Orders
+</p>
+
+<h3 id="adminOrderCount"
+class="text-3xl font-black text-green-700">
+0
+</h3>
+
+</div>
+
+
+<div class="bg-white rounded-3xl shadow p-6">
+
+<p class="text-gray-500">
+Farmers
+</p>
+
+<h3 id="adminFarmerCount"
+class="text-3xl font-black text-green-700">
+0
+</h3>
+
+</div>
+
+
+<div class="bg-white rounded-3xl shadow p-6">
+
+<p class="text-gray-500">
+Products
+</p>
+
+<h3 id="adminProductCount"
+class="text-3xl font-black text-green-700">
+0
+</h3>
+
+</div>
+
+
+<div class="bg-white rounded-3xl shadow p-6">
+
+<p class="text-gray-500">
+Total Sales
+</p>
+
+<h3 id="adminSales"
+class="text-3xl font-black text-green-700">
+₹0
+</h3>
+
+</div>
+
+</div>
+
+
+<div class="bg-white rounded-3xl shadow-xl p-6">
+
+<div class="flex flex-col md:flex-row md:justify-between gap-4 mb-6">
+
+<h3 class="text-2xl font-black text-green-800">
+📦 All Customer Orders
+</h3>
+
+<button onclick="loadAdminOrders()"
+class="bg-green-100 text-green-800 px-4 py-2 rounded-xl">
+
+🔄 Refresh Orders
+
+</button>
+
+</div>
+
+<div id="adminOrdersList"></div>
+
+</div>
+
+</div>
+
 </section>
 
 
 <!-- CONTACT -->
+
 <section id="contact" class="page">
 
 <div class="max-w-5xl mx-auto px-5 py-12">
 
 <div class="text-center mb-10">
 
-<p class="text-green-600 font-bold">GET IN TOUCH</p>
+<p class="text-green-600 font-bold">
+GET IN TOUCH
+</p>
 
 <h2 class="text-4xl font-black text-green-900">
 📞 Contact Us
@@ -601,7 +1007,9 @@ class="p-5 rounded-2xl bg-purple-50 hover:bg-purple-100">
 
 </div>
 
+
 <div class="grid md:grid-cols-2 gap-8">
+
 
 <div class="bg-green-900 text-white rounded-3xl p-8">
 
@@ -616,21 +1024,47 @@ Have questions? Send us a message.
 <div class="space-y-6 mt-8">
 
 <div>
+
 <span class="text-2xl">📧</span>
-<p class="font-bold">Email</p>
-<p class="text-green-200">farmersmarketplacehub@gmail.com</p>
+
+<p class="font-bold">
+Email
+</p>
+
+<p class="text-green-200">
+farmersmarketplacehub@gmail.com
+</p>
+
 </div>
 
+
 <div>
+
 <span class="text-2xl">📱</span>
-<p class="font-bold">Phone</p>
-<p class="text-green-200">+91 98765 43210</p>
+
+<p class="font-bold">
+Phone
+</p>
+
+<p class="text-green-200">
++91 94038 71428
+</p>
+
 </div>
 
+
 <div>
+
 <span class="text-2xl">📍</span>
-<p class="font-bold">Location</p>
-<p class="text-green-200">Maharashtra, India</p>
+
+<p class="font-bold">
+Location
+</p>
+
+<p class="text-green-200">
+Maharashtra, India
+</p>
+
 </div>
 
 </div>
@@ -655,17 +1089,22 @@ class="input mb-4"></textarea>
 
 <button onclick="sendMessage()"
 class="w-full bg-green-700 text-white py-4 rounded-xl font-bold">
+
 Send Message
+
 </button>
 
 </div>
 
 </div>
+
 </div>
+
 </section>
 
 
-<!-- CART MODAL -->
+<!-- CART -->
+
 <div id="cartModal"
 class="modal fixed inset-0 z-[100] bg-black/60 items-center justify-center p-4">
 
@@ -677,7 +1116,9 @@ class="modal fixed inset-0 z-[100] bg-black/60 items-center justify-center p-4">
 🛒 Your Cart
 </h2>
 
-<button onclick="closeCart()" class="text-2xl">✕</button>
+<button onclick="closeCart()" class="text-2xl">
+✕
+</button>
 
 </div>
 
@@ -686,22 +1127,161 @@ class="modal fixed inset-0 z-[100] bg-black/60 items-center justify-center p-4">
 <div class="border-t p-6">
 
 <div class="flex justify-between text-xl font-black mb-5">
-<span>Total</span>
-<span id="cartTotal" class="text-green-700">₹0</span>
+
+<span>
+Total
+</span>
+
+<span id="cartTotal"
+class="text-green-700">
+₹0
+</span>
+
 </div>
 
-<button onclick="placeOrder()"
+<button onclick="openCheckout()"
 class="w-full bg-green-700 text-white py-4 rounded-xl font-bold">
-📦 Place Order
+
+Proceed To Checkout
+
 </button>
 
 </div>
 
 </div>
+
 </div>
 
 
-<!-- LOGIN MODAL -->
+<!-- CHECKOUT -->
+
+<div id="checkoutModal"
+class="modal fixed inset-0 z-[110] bg-black/60 items-center justify-center p-4">
+
+<div class="bg-white rounded-3xl max-w-xl w-full max-h-[92vh] overflow-auto">
+
+<div class="flex justify-between items-center p-6 border-b">
+
+<div>
+
+<h2 class="text-2xl font-black text-green-800">
+🧾 Checkout
+</h2>
+
+<p class="text-sm text-gray-500">
+Delivery information
+</p>
+
+</div>
+
+<button onclick="closeCheckout()"
+class="text-2xl">
+✕
+</button>
+
+</div>
+
+
+<div class="p-6">
+
+
+<label class="font-bold">
+Customer Name
+</label>
+
+<input id="checkoutName"
+placeholder="Full Name"
+class="input mt-2 mb-4">
+
+
+<label class="font-bold">
+Mobile Number
+</label>
+
+<input id="checkoutPhone"
+type="tel"
+maxlength="10"
+placeholder="10 digit mobile number"
+class="input mt-2 mb-4">
+
+
+<label class="font-bold">
+Delivery Address
+</label>
+
+<textarea id="checkoutAddress"
+rows="4"
+placeholder="House no, street, village, area..."
+class="input mt-2 mb-4"></textarea>
+
+
+<div class="grid grid-cols-2 gap-4">
+
+
+<div>
+
+<label class="font-bold">
+City / Village
+</label>
+
+<input id="checkoutCity"
+placeholder="City"
+class="input mt-2">
+
+</div>
+
+
+<div>
+
+<label class="font-bold">
+Pincode
+</label>
+
+<input id="checkoutPincode"
+type="text"
+maxlength="6"
+placeholder="6 digit pincode"
+class="input mt-2">
+
+</div>
+
+</div>
+
+
+<div class="bg-green-50 rounded-2xl p-5 mt-6">
+
+<div class="flex justify-between">
+
+<span class="font-bold">
+Order Total
+</span>
+
+<span id="checkoutTotal"
+class="text-xl font-black text-green-700">
+₹0
+</span>
+
+</div>
+
+</div>
+
+
+<button onclick="submitCheckout()"
+class="w-full bg-green-700 text-white py-4 rounded-xl font-bold mt-6">
+
+📦 Confirm & Place Order
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- LOGIN -->
+
 <div id="loginModal"
 class="modal fixed inset-0 z-[100] bg-black/60 items-center justify-center p-4">
 
@@ -710,12 +1290,16 @@ class="modal fixed inset-0 z-[100] bg-black/60 items-center justify-center p-4">
 <div class="flex justify-between mb-6">
 
 <h2 class="text-2xl font-black text-green-800">
-👤 Welcome
+👤 Customer Login
 </h2>
 
-<button onclick="closeLogin()" class="text-2xl">✕</button>
+<button onclick="closeLogin()"
+class="text-2xl">
+✕
+</button>
 
 </div>
+
 
 <input id="loginName"
 placeholder="Your Name"
@@ -726,79 +1310,143 @@ type="email"
 placeholder="Your Email"
 class="input mb-5">
 
+
 <button onclick="loginUser()"
 class="w-full bg-green-700 text-white py-4 rounded-xl font-bold">
-Login / Continue
+
+Continue
+
 </button>
 
 </div>
+
 </div>
 
 
 <!-- FOOTER -->
+
 <footer class="bg-green-950 text-white mt-16">
 
 <div class="max-w-7xl mx-auto px-5 py-12">
 
 <div class="grid md:grid-cols-4 gap-8">
 
+
 <div>
-<h3 class="text-xl font-black">🌾 Farmers Marketplace Hub</h3>
+
+<h3 class="text-xl font-black">
+🌾 Farmers Marketplace Hub
+</h3>
+
 <p class="text-green-300 mt-3">
 A digital bridge between farmers and customers.
 </p>
+
 </div>
+
 
 <div>
-<h4 class="font-bold mb-4">Marketplace</h4>
-<button onclick="go('products')" class="block text-green-300 mb-2">Products</button>
-<button onclick="go('farmers')" class="block text-green-300 mb-2">Farmers</button>
-<button onclick="go('orders')" class="block text-green-300 mb-2">Orders</button>
+
+<h4 class="font-bold mb-4">
+Marketplace
+</h4>
+
+<button onclick="go('products')"
+class="block text-green-300 mb-2">
+Products
+</button>
+
+<button onclick="go('farmers')"
+class="block text-green-300 mb-2">
+Farmers
+</button>
+
+<button onclick="go('orders')"
+class="block text-green-300 mb-2">
+My Orders
+</button>
+
 </div>
+
 
 <div>
-<h4 class="font-bold mb-4">Quick Access</h4>
-<button onclick="go('home')" class="block text-green-300 mb-2">Home</button>
-<button onclick="go('dashboard')" class="block text-green-300 mb-2">Dashboard</button>
-<button onclick="openCart()" class="block text-green-300 mb-2">Cart</button>
+
+<h4 class="font-bold mb-4">
+Quick Access
+</h4>
+
+<button onclick="go('home')"
+class="block text-green-300 mb-2">
+Home
+</button>
+
+<button onclick="go('admin')"
+class="block text-green-300 mb-2">
+Admin
+</button>
+
+<button onclick="openCart()"
+class="block text-green-300 mb-2">
+Cart
+</button>
+
 </div>
+
 
 <div>
-<h4 class="font-bold mb-4">Contact</h4>
-<p class="text-green-300">📧 farmersmarketplacehub@gmail.com</p>
-<p class="text-green-300 mt-2">📱 +91 98765 43210</p>
-</div>
+
+<h4 class="font-bold mb-4">
+Contact
+</h4>
+
+<p class="text-green-300">
+📧 farmersmarketplacehub@gmail.com
+</p>
+
+<p class="text-green-300 mt-2">
+📱 +91 94038 71428
+</p>
 
 </div>
 
-<div class="border-t border-green-800 mt-10 pt-6 text-center text-green-400">
-© 2026 Farmers Marketplace Hub • All Rights Reserved
+</div>
+
+
+<div class="border-t border-green-800 mt-10 pt-6 text-center">
+
+<p class="text-green-300 text-sm">
+© 2026 Farmers Marketplace Hub | All Rights Reserved
+</p>
+
+<p class="mt-3 text-lg font-black text-yellow-300">
+
+🌾 Developed by
+
+<span class="text-white">
+Shrutika S. Kashid
+</span>
+
+</p>
+
+<p class="text-green-400 text-xs mt-1">
+Connecting Farmers • Empowering Communities • Growing Together
+</p>
+
 </div>
 
 </div>
+
 </footer>
 
 
 <script>
 
-/* INPUT STYLE */
-document.querySelectorAll(".input").forEach(el=>{
-el.classList.add(
-"w-full",
-"px-4",
-"py-3",
-"border",
-"rounded-xl",
-"outline-none",
-"focus:ring-2",
-"focus:ring-green-500"
-);
-});
+/* =========================
+DATA
+========================= */
 
+let products = [
 
-/* PRODUCT DATA */
-
-let products=[
 {
 id:1,
 name:"Fresh Tomato",
@@ -807,6 +1455,7 @@ category:"vegetable",
 emoji:"🍅",
 farmer:"Local Farmer"
 },
+
 {
 id:2,
 name:"Fresh Potato",
@@ -815,6 +1464,7 @@ category:"vegetable",
 emoji:"🥔",
 farmer:"Local Farmer"
 },
+
 {
 id:3,
 name:"Fresh Onion",
@@ -823,6 +1473,7 @@ category:"vegetable",
 emoji:"🧅",
 farmer:"Local Farmer"
 },
+
 {
 id:4,
 name:"Fresh Carrot",
@@ -831,6 +1482,7 @@ category:"vegetable",
 emoji:"🥕",
 farmer:"Local Farmer"
 },
+
 {
 id:5,
 name:"Fresh Mango",
@@ -839,6 +1491,7 @@ category:"fruit",
 emoji:"🥭",
 farmer:"Mango Farmer"
 },
+
 {
 id:6,
 name:"Fresh Apple",
@@ -847,6 +1500,7 @@ category:"fruit",
 emoji:"🍎",
 farmer:"Fruit Farmer"
 },
+
 {
 id:7,
 name:"Wheat",
@@ -855,6 +1509,7 @@ category:"grain",
 emoji:"🌾",
 farmer:"Grain Farmer"
 },
+
 {
 id:8,
 name:"Rice",
@@ -863,6 +1518,7 @@ category:"grain",
 emoji:"🍚",
 farmer:"Grain Farmer"
 },
+
 {
 id:9,
 name:"Fresh Milk",
@@ -871,6 +1527,7 @@ category:"dairy",
 emoji:"🥛",
 farmer:"Dairy Farmer"
 },
+
 {
 id:10,
 name:"Curd",
@@ -879,26 +1536,35 @@ category:"dairy",
 emoji:"🥣",
 farmer:"Dairy Farmer"
 }
+
 ];
 
 
-let cart=JSON.parse(localStorage.getItem("farmCart")||"[]");
+let cart =
+JSON.parse(localStorage.getItem("farmCart") || "[]");
 
-let orders=JSON.parse(localStorage.getItem("farmOrders")||"[]");
+let orders = [];
 
-let currentCategory="all";
+let farmers =
+JSON.parse(localStorage.getItem("farmers") || "[]");
 
-let farmers=JSON.parse(localStorage.getItem("farmers")||"[]");
+let currentCategory = "all";
+
+let adminLoggedIn = false;
+
+let previousOrderCount = 0;
 
 
-/* PAGE NAVIGATION */
+/* =========================
+PAGE
+========================= */
 
 function go(page){
 
 document.querySelectorAll(".page")
-.forEach(x=>x.classList.remove("active"));
+.forEach(p=>p.classList.remove("active"));
 
-let target=document.getElementById(page);
+const target=document.getElementById(page);
 
 if(target){
 target.classList.add("active");
@@ -909,16 +1575,24 @@ top:0,
 behavior:"smooth"
 });
 
-if(page==="products")renderProducts();
+if(page==="products"){
+renderProducts();
+}
 
-if(page==="orders")renderOrders();
+if(page==="orders"){
+renderOrders();
+}
 
-if(page==="dashboard")updateDashboard();
+if(page==="admin" && adminLoggedIn){
+showAdminPanel();
+}
 
 }
 
 
-/* MOBILE */
+/* =========================
+MOBILE
+========================= */
 
 function toggleMenu(){
 
@@ -929,59 +1603,53 @@ document
 }
 
 
-/* TOAST */
+/* =========================
+TOAST
+========================= */
 
 function toast(message){
 
-document.getElementById("toastText").innerText=message;
+const text=document.getElementById("toastText");
 
-let t=document.getElementById("toast");
+text.innerText=message;
 
-t.classList.add("show");
+const box=document.getElementById("toast");
+
+box.classList.add("show");
 
 setTimeout(()=>{
-t.classList.remove("show");
-},2500);
+box.classList.remove("show");
+},3000);
 
 }
 
 
-/* PRODUCTS */
+/* =========================
+PRODUCTS
+========================= */
 
 function renderProducts(){
 
-let grid=document.getElementById("productGrid");
+const grid=document.getElementById("productGrid");
 
-let search=(document.getElementById("search")?.value||"")
+if(!grid)return;
+
+const search=
+(document.getElementById("search")?.value||"")
 .toLowerCase();
 
-let list=products.filter(p=>{
+const list=products.filter(p=>{
 
-let categoryMatch=
+const categoryMatch=
 currentCategory==="all"||
 p.category===currentCategory;
 
-let searchMatch=
+const searchMatch=
 p.name.toLowerCase().includes(search);
 
 return categoryMatch&&searchMatch;
 
 });
-
-
-if(list.length===0){
-
-grid.innerHTML=`
-<div class="col-span-full bg-white rounded-3xl p-12 text-center">
-<div class="text-6xl">🔍</div>
-<h3 class="text-xl font-bold mt-4">No products found</h3>
-<p class="text-gray-500 mt-2">Try another search.</p>
-</div>
-`;
-
-return;
-
-}
 
 
 grid.innerHTML=list.map(p=>`
@@ -994,21 +1662,13 @@ ${p.emoji}
 
 <div class="p-5">
 
-<div class="flex justify-between items-start">
-
-<div>
-
 <span class="text-xs uppercase font-bold text-green-600">
 ${p.category}
 </span>
 
-<h3 class="text-xl font-black text-gray-800 mt-1">
+<h3 class="text-xl font-black mt-1">
 ${p.name}
 </h3>
-
-</div>
-
-</div>
 
 <p class="text-gray-500 text-sm mt-2">
 👨‍🌾 ${p.farmer}
@@ -1016,73 +1676,69 @@ ${p.name}
 
 <div class="flex items-center justify-between mt-5">
 
-<div>
 <span class="text-2xl font-black text-green-700">
 ₹${p.price}
 </span>
-<span class="text-gray-400 text-sm">
-/ unit
-</span>
-</div>
 
-<button onclick="addToCart(${p.id})"
-class="bg-green-700 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-green-800">
+<button
+onclick="addToCart(${p.id})"
+class="bg-green-700 text-white px-5 py-2.5 rounded-xl font-bold">
+
 Add
+
 </button>
 
 </div>
 
 </div>
+
 </div>
 
 `).join("");
 
+document.getElementById("productStat").innerText=
+products.length;
+
 }
 
 
-function filterProducts(){
-renderProducts();
-}
-
-
-function filterCategory(category){
+function setCategory(category){
 
 currentCategory=category;
 
-document.querySelectorAll(".cat")
-.forEach(b=>{
-b.classList.remove("bg-green-700","text-white");
-b.classList.add("bg-white");
-});
-
-event.target.classList.remove("bg-white");
-event.target.classList.add("bg-green-700","text-white");
-
 renderProducts();
 
 }
 
 
-/* CART */
+/* =========================
+CART
+========================= */
 
 function addToCart(id){
 
-let product=products.find(p=>p.id===id);
+const product=products.find(p=>p.id===id);
 
 if(!product)return;
 
-let existing=cart.find(x=>x.id===id);
+const existing=cart.find(item=>item.id===id);
 
 if(existing){
+
 existing.qty++;
+
 }else{
+
 cart.push({
+
 id:product.id,
 name:product.name,
 price:product.price,
 emoji:product.emoji,
 qty:1
+
 });
+
 }
 
 saveCart();
@@ -1101,18 +1757,16 @@ JSON.stringify(cart)
 
 updateCart();
 
-updateDashboard();
-
 }
 
 
 function updateCart(){
 
-let count=cart.reduce(
-(a,b)=>a+b.qty,0
-);
+const count=
+cart.reduce((sum,item)=>sum+item.qty,0);
 
-document.getElementById("cartCount").innerText=count;
+document.getElementById("cartCount").innerText=
+count;
 
 }
 
@@ -1139,19 +1793,24 @@ document
 
 function renderCart(){
 
-let box=document.getElementById("cartItems");
+const box=document.getElementById("cartItems");
 
 if(cart.length===0){
 
 box.innerHTML=`
+
 <div class="text-center py-10">
-<div class="text-6xl">🛒</div>
-<h3 class="font-bold text-xl mt-4">Your cart is empty</h3>
-<button onclick="closeCart();go('products')"
-class="mt-5 bg-green-700 text-white px-6 py-3 rounded-xl">
-Browse Products
-</button>
+
+<div class="text-6xl">
+🛒
 </div>
+
+<h3 class="font-bold text-xl mt-4">
+Your cart is empty
+</h3>
+
+</div>
+
 `;
 
 document.getElementById("cartTotal").innerText="₹0";
@@ -1160,16 +1819,15 @@ return;
 
 }
 
-
 let total=0;
 
 box.innerHTML=cart.map((item,index)=>{
 
-let itemTotal=item.price*item.qty;
+const itemTotal=item.price*item.qty;
 
 total+=itemTotal;
 
-return`
+return `
 
 <div class="flex gap-4 items-center border-b py-4">
 
@@ -1183,13 +1841,14 @@ ${item.emoji}
 ${item.name}
 </h4>
 
-<p class="text-green-700 font-semibold">
+<p class="text-green-700">
 ₹${item.price}
 </p>
 
 <div class="flex items-center gap-3 mt-2">
 
-<button onclick="changeQty(${index},-1)"
+<button
+onclick="changeQty(${index},-1)"
 class="w-8 h-8 bg-gray-100 rounded-full">
 −
 </button>
@@ -1198,7 +1857,8 @@ class="w-8 h-8 bg-gray-100 rounded-full">
 ${item.qty}
 </span>
 
-<button onclick="changeQty(${index},1)"
+<button
+onclick="changeQty(${index},1)"
 class="w-8 h-8 bg-gray-100 rounded-full">
 +
 </button>
@@ -1209,11 +1869,16 @@ class="w-8 h-8 bg-gray-100 rounded-full">
 
 <div class="text-right">
 
-<b>₹${itemTotal}</b>
+<b>
+₹${itemTotal}
+</b>
 
-<button onclick="removeItem(${index})"
+<button
+onclick="removeItem(${index})"
 class="block text-red-500 text-xs mt-2">
+
 Remove
+
 </button>
 
 </div>
@@ -1258,233 +1923,9 @@ toast("Item removed");
 }
 
 
-/* ORDER */
-
-async function placeOrder(){
-
-if(cart.length===0){
-
-toast("Your cart is empty");
-
-return;
-
-}
-
-
-let user=
-JSON.parse(localStorage.getItem("farmUser")||"null");
-
-
-if(!user){
-
-closeCart();
-
-openLogin();
-
-toast("Please login before placing order");
-
-return;
-
-}
-
-
-let total=cart.reduce(
-(a,b)=>a+b.price*b.qty,0
-);
-
-
-let order={
-
-customer:user.name,
-
-email:user.email,
-
-items:cart,
-
-total:total,
-
-status:"Pending",
-
-createdAt:new Date().toISOString()
-
-};
-
-
-try{
-
-if(window.db){
-
-let orderRef=window.dbRef(window.db,"orders");
-
-let newOrder=window.dbPush(orderRef);
-
-await window.dbSet(newOrder,order);
-
-}
-
-orders.push(order);
-
-localStorage.setItem(
-"farmOrders",
-JSON.stringify(orders)
-);
-
-cart=[];
-
-saveCart();
-
-closeCart();
-
-toast("🎉 Order placed successfully!");
-
-go("orders");
-
-}catch(error){
-
-console.error(error);
-
-toast("Firebase permission error");
-
-}
-
-}
-
-
-/* ORDERS */
-
-function renderOrders(){
-
-let box=document.getElementById("ordersList");
-
-let user=
-JSON.parse(localStorage.getItem("farmUser")||"null");
-
-
-if(!user){
-
-box.innerHTML=`
-
-<div class="bg-white rounded-3xl shadow p-10 text-center">
-
-<div class="text-6xl">🔐</div>
-
-<h3 class="text-2xl font-black mt-4">
-Login Required
-</h3>
-
-<p class="text-gray-500 mt-2">
-Login to view your orders.
-</p>
-
-<button onclick="openLogin()"
-class="mt-5 bg-green-700 text-white px-7 py-3 rounded-xl">
-Login
-</button>
-
-</div>
-`;
-
-return;
-
-}
-
-
-let myOrders=orders.filter(
-o=>o.email===user.email
-);
-
-
-if(myOrders.length===0){
-
-box.innerHTML=`
-
-<div class="bg-white rounded-3xl shadow p-12 text-center">
-
-<div class="text-6xl">📦</div>
-
-<h3 class="text-2xl font-black mt-4">
-No Orders Yet
-</h3>
-
-<p class="text-gray-500 mt-2">
-Your placed orders will appear here.
-</p>
-
-<button onclick="go('products')"
-class="mt-5 bg-green-700 text-white px-7 py-3 rounded-xl">
-Start Shopping
-</button>
-
-</div>
-`;
-
-return;
-
-}
-
-
-box.innerHTML=myOrders.reverse().map((o,i)=>`
-
-<div class="bg-white rounded-3xl shadow-lg p-6 mb-5">
-
-<div class="flex flex-col md:flex-row md:justify-between gap-3">
-
-<div>
-
-<h3 class="text-xl font-black text-green-800">
-Order #${i+1}
-</h3>
-
-<p class="text-gray-500 text-sm">
-${new Date(o.createdAt).toLocaleString()}
-</p>
-
-</div>
-
-<span class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full h-fit font-bold">
-${o.status}
-</span>
-
-</div>
-
-<div class="border-t mt-5 pt-5 space-y-3">
-
-${o.items.map(item=>`
-
-<div class="flex justify-between">
-
-<span>
-${item.emoji} ${item.name} × ${item.qty}
-</span>
-
-<b>
-₹${item.price*item.qty}
-</b>
-
-</div>
-
-`).join("")}
-
-</div>
-
-<div class="border-t mt-5 pt-5 flex justify-between text-xl font-black">
-
-<span>Total</span>
-
-<span class="text-green-700">
-₹${o.total}
-</span>
-
-</div>
-
-</div>
-
-`).join("");
-
-}
-
-
-/* LOGIN */
+/* =========================
+LOGIN
+========================= */
 
 function openLogin(){
 
@@ -1506,12 +1947,11 @@ document
 
 function loginUser(){
 
-let name=
+const name=
 document.getElementById("loginName").value.trim();
 
-let email=
+const email=
 document.getElementById("loginEmail").value.trim();
-
 
 if(!name||!email){
 
@@ -1521,18 +1961,13 @@ return;
 
 }
 
-
-let user={name,email};
-
 localStorage.setItem(
 "farmUser",
-JSON.stringify(user)
+JSON.stringify({
+name:name,
+email:email
+})
 );
-
-
-document.getElementById("loginName").value="";
-document.getElementById("loginEmail").value="";
-
 
 closeLogin();
 
@@ -1545,21 +1980,29 @@ toast("Welcome "+name+" 👋");
 
 function updateUser(){
 
-let user=
-JSON.parse(localStorage.getItem("farmUser")||"null");
+const user=
+JSON.parse(
+localStorage.getItem("farmUser")||"null"
+);
 
-let btn=document.getElementById("loginBtn");
+const btn=document.getElementById("loginBtn");
 
 if(user){
 
 btn.innerText="👤 "+user.name;
 
 btn.onclick=()=>{
+
 if(confirm("Logout from account?")){
+
 localStorage.removeItem("farmUser");
+
 updateUser();
+
 toast("Logged out");
+
 }
+
 };
 
 }else{
@@ -1573,52 +2016,1202 @@ btn.onclick=openLogin;
 }
 
 
-/* FARMER */
+/* =========================
+CHECKOUT
+========================= */
 
-async function registerFarmer(){
+function openCheckout(){
 
-let name=
-document.getElementById("farmerName").value.trim();
+if(cart.length===0){
 
-let phone=
-document.getElementById("farmerPhone").value.trim();
+toast("Your cart is empty");
 
-let village=
-document.getElementById("farmerVillage").value.trim();
+return;
 
-let crop=
-document.getElementById("farmerCrop").value.trim();
+}
+
+const user=
+JSON.parse(
+localStorage.getItem("farmUser")||"null"
+);
+
+if(!user){
+
+closeCart();
+
+openLogin();
+
+toast("Please login first");
+
+return;
+
+}
+
+document.getElementById("checkoutName").value=
+user.name||"";
+
+const total=
+cart.reduce(
+(sum,item)=>sum+item.price*item.qty,
+0
+);
+
+document.getElementById("checkoutTotal").innerText=
+"₹"+total;
+
+closeCart();
+
+document
+.getElementById("checkoutModal")
+.classList.add("show");
+
+}
 
 
-if(!name||!phone||!village||!crop){
+function closeCheckout(){
 
-toast("Please fill all farmer details");
+document
+.getElementById("checkoutModal")
+.classList.remove("show");
+
+}
+
+
+/* =========================
+PLACE ORDER
+========================= */
+
+async function submitCheckout(){
+
+const user=
+JSON.parse(
+localStorage.getItem("farmUser")||"null"
+);
+
+if(!user){
+
+toast("Please login first");
+
+return;
+
+}
+
+const name=
+document.getElementById("checkoutName").value.trim();
+
+const phone=
+document.getElementById("checkoutPhone").value.trim();
+
+const address=
+document.getElementById("checkoutAddress").value.trim();
+
+const city=
+document.getElementById("checkoutCity").value.trim();
+
+const pincode=
+document.getElementById("checkoutPincode").value.trim();
+
+if(!name||!phone||!address||!city||!pincode){
+
+toast("Please fill all delivery details");
+
+return;
+
+}
+
+if(!/^[0-9]{10}$/.test(phone)){
+
+toast("Enter valid 10 digit mobile number");
+
+return;
+
+}
+
+if(!/^[0-9]{6}$/.test(pincode)){
+
+toast("Enter valid 6 digit pincode");
+
+return;
+
+}
+
+const total=
+cart.reduce(
+(sum,item)=>sum+item.price*item.qty,
+0
+);
+
+const orderData={
+
+customerName:name,
+
+customerEmail:user.email,
+
+phone:phone,
+
+deliveryAddress:address,
+
+city:city,
+
+pincode:pincode,
+
+items:cart.map(item=>({
+
+productId:item.id,
+
+productName:item.name,
+
+price:item.price,
+
+quantity:item.qty,
+
+emoji:item.emoji,
+
+itemTotal:item.price*item.qty
+
+})),
+
+totalAmount:total,
+
+orderStatus:"Pending",
+
+paymentStatus:"Cash on Delivery",
+
+orderDate:new Date().toISOString()
+
+};
+
+try{
+
+if(!window.firebaseDB){
+
+toast("Firebase is not ready. Try again.");
+
+return;
+
+}
+
+const ordersRef=
+window.firebaseRef(
+window.firebaseDB,
+"orders"
+);
+
+const newOrderRef=
+window.firebasePush(ordersRef);
+
+const orderId=
+newOrderRef.key;
+
+orderData.orderId=orderId;
+
+await window.firebaseSet(
+newOrderRef,
+orderData
+);
+
+cart=[];
+
+saveCart();
+
+document.getElementById("checkoutPhone").value="";
+document.getElementById("checkoutAddress").value="";
+document.getElementById("checkoutCity").value="";
+document.getElementById("checkoutPincode").value="";
+
+closeCheckout();
+
+toast(
+"🎉 Order placed successfully! Order ID: "+
+orderId.substring(0,8)
+);
+
+go("orders");
+
+}catch(error){
+
+console.error(error);
+
+toast(
+"Order failed. Check Firebase Database Rules."
+);
+
+}
+
+}
+
+
+/* =========================
+CUSTOMER ORDERS
+========================= */
+
+function renderOrders(){
+
+const box=document.getElementById("ordersList");
+
+if(!box)return;
+
+const user=
+JSON.parse(
+localStorage.getItem("farmUser")||"null"
+);
+
+if(!user){
+
+box.innerHTML=`
+
+<div class="bg-white rounded-3xl shadow p-10 text-center">
+
+<div class="text-6xl">
+🔐
+</div>
+
+<h3 class="text-2xl font-black mt-4">
+Login Required
+</h3>
+
+<button
+onclick="openLogin()"
+class="mt-5 bg-green-700 text-white px-7 py-3 rounded-xl">
+
+Login
+
+</button>
+
+</div>
+
+`;
+
+return;
+
+}
+
+const myOrders=
+orders.filter(
+order=>order.customerEmail===user.email
+);
+
+if(myOrders.length===0){
+
+box.innerHTML=`
+
+<div class="bg-white rounded-3xl shadow p-12 text-center">
+
+<div class="text-6xl">
+📦
+</div>
+
+<h3 class="text-2xl font-black mt-4">
+No Orders Yet
+</h3>
+
+<button
+onclick="go('products')"
+class="mt-5 bg-green-700 text-white px-7 py-3 rounded-xl">
+
+Start Shopping
+
+</button>
+
+</div>
+
+`;
+
+return;
+
+}
+
+box.innerHTML=
+myOrders.slice().reverse().map(order=>`
+
+<div class="bg-white rounded-3xl shadow-lg p-6 mb-5">
+
+<div class="flex flex-col md:flex-row md:justify-between gap-3">
+
+<div>
+
+<h3 class="text-xl font-black text-green-800">
+
+📦 Order #${String(order.orderId).substring(0,8)}
+
+</h3>
+
+<p class="text-gray-500 text-sm">
+${new Date(order.orderDate).toLocaleString()}
+</p>
+
+</div>
+
+<span class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full h-fit font-bold">
+${order.orderStatus}
+</span>
+
+</div>
+
+<div class="border-t mt-5 pt-5">
+
+${
+(order.items||[]).map(item=>`
+
+<div class="flex justify-between py-2">
+
+<span>
+${item.emoji}
+${item.productName}
+× ${item.quantity}
+</span>
+
+<b>
+₹${item.itemTotal}
+</b>
+
+</div>
+
+`).join("")
+}
+
+</div>
+
+<div class="bg-green-50 rounded-xl p-4 mt-5">
+
+<p class="font-bold">
+🚚 Delivery Address
+</p>
+
+<p class="text-sm mt-2">
+${order.deliveryAddress}
+</p>
+
+<p class="text-sm">
+${order.city} - ${order.pincode}
+</p>
+
+</div>
+
+<div class="flex justify-between text-xl font-black mt-5">
+
+<span>
+Total
+</span>
+
+<span class="text-green-700">
+₹${order.totalAmount}
+</span>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+
+/* =========================
+ADMIN LOGIN
+========================= */
+
+function adminLogin(){
+
+const email=
+document.getElementById("adminEmail").value.trim();
+
+const password=
+document.getElementById("adminPassword").value;
+
+if(
+email==="admin@farmershub.com" &&
+password==="admin123"
+){
+
+adminLoggedIn=true;
+
+sessionStorage.setItem(
+"adminLoggedIn",
+"true"
+);
+
+showAdminPanel();
+
+toast("✅ Admin login successful");
+
+}else{
+
+toast("❌ Invalid admin credentials");
+
+}
+
+}
+
+
+function showAdminPanel(){
+
+document
+.getElementById("adminLoginArea")
+.classList.add("hidden");
+
+document
+.getElementById("adminPanel")
+.classList.remove("hidden");
+
+loadAdminOrders();
+
+}
+
+
+function adminLogout(){
+
+adminLoggedIn=false;
+
+sessionStorage.removeItem(
+"adminLoggedIn"
+);
+
+document
+.getElementById("adminLoginArea")
+.classList.remove("hidden");
+
+document
+.getElementById("adminPanel")
+.classList.add("hidden");
+
+toast("Admin logged out");
+
+}
+
+
+/* =========================
+ADMIN ORDERS
+========================= */
+
+function loadAdminOrders(){
+
+if(!adminLoggedIn)return;
+
+const box=
+document.getElementById("adminOrdersList");
+
+if(!box)return;
+
+if(orders.length===0){
+
+box.innerHTML=`
+
+<div class="text-center py-12">
+
+<div class="text-6xl">
+📦
+</div>
+
+<h3 class="text-xl font-bold mt-4">
+No orders available
+</h3>
+
+</div>
+
+`;
+
+updateAdminStats();
+
+return;
+
+}
+
+const sortedOrders=
+orders.slice().reverse();
+
+box.innerHTML=
+sortedOrders.map(order=>`
+
+<div class="border rounded-3xl p-5 mb-6 bg-green-50">
+
+
+<div class="flex flex-col md:flex-row md:justify-between gap-4">
+
+<div>
+
+<h3 class="text-xl font-black text-green-900">
+
+📦 Order ID:
+${order.orderId}
+
+</h3>
+
+<p class="text-sm text-gray-500 mt-1">
+
+${new Date(order.orderDate).toLocaleString()}
+
+</p>
+
+</div>
+
+<span class="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full font-bold h-fit">
+
+${order.orderStatus}
+
+</span>
+
+</div>
+
+
+<!-- CUSTOMER -->
+
+<div class="bg-white rounded-2xl p-5 mt-5">
+
+<h4 class="font-black text-lg text-green-800 mb-4">
+
+👤 Customer Information
+
+</h4>
+
+<div class="grid md:grid-cols-2 gap-4 text-sm">
+
+
+<div>
+
+<span class="text-gray-500">
+Customer Name
+</span>
+
+<p class="font-bold text-lg">
+${order.customerName}
+</p>
+
+</div>
+
+
+<div>
+
+<span class="text-gray-500">
+Mobile Number
+</span>
+
+<p class="font-bold text-lg">
+📱 ${order.phone}
+</p>
+
+</div>
+
+
+<div>
+
+<span class="text-gray-500">
+Email
+</span>
+
+<p class="font-bold">
+${order.customerEmail}
+</p>
+
+</div>
+
+
+<div>
+
+<span class="text-gray-500">
+Payment
+</span>
+
+<p class="font-bold">
+💵 ${order.paymentStatus}
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- DELIVERY -->
+
+<div class="bg-white rounded-2xl p-5 mt-4">
+
+<h4 class="font-black text-lg text-green-800 mb-4">
+
+🏠 Delivery Information
+
+</h4>
+
+<div class="text-sm">
+
+<p>
+<b>Full Address:</b>
+${order.deliveryAddress}
+</p>
+
+<p class="mt-2">
+<b>City / Village:</b>
+${order.city}
+</p>
+
+<p class="mt-2">
+<b>Pincode:</b>
+${order.pincode}
+</p>
+
+<p class="mt-2">
+<b>Customer Mobile:</b>
+${order.phone}
+</p>
+
+</div>
+
+</div>
+
+
+<!-- PRODUCTS -->
+
+<div class="bg-white rounded-2xl p-5 mt-4">
+
+<h4 class="font-black text-lg text-green-800 mb-4">
+
+🛍️ Ordered Products
+
+</h4>
+
+
+<div class="space-y-3">
+
+${
+(order.items||[]).map(item=>`
+
+<div class="flex justify-between border-b pb-3">
+
+<div>
+
+<span class="text-xl">
+${item.emoji}
+</span>
+
+<b>
+${item.productName}
+</b>
+
+<span class="text-gray-500">
+× ${item.quantity}
+</span>
+
+<p class="text-xs text-gray-500">
+₹${item.price} per item
+</p>
+
+</div>
+
+<div class="font-bold">
+₹${item.itemTotal}
+</div>
+
+</div>
+
+`).join("")
+}
+
+</div>
+
+
+<div class="flex justify-between text-xl font-black mt-5">
+
+<span>
+Total Amount
+</span>
+
+<span class="text-green-700">
+₹${order.totalAmount}
+</span>
+
+</div>
+
+</div>
+
+
+<!-- STATUS -->
+
+<div class="bg-white rounded-2xl p-5 mt-4">
+
+<h4 class="font-black text-green-800 mb-3">
+
+🔄 Update Order Status
+
+</h4>
+
+
+<select
+onchange="updateOrderStatus('${order.orderId}',this.value)"
+class="input">
+
+<option value="Pending"
+${order.orderStatus==="Pending"?"selected":""}>
+Pending
+</option>
+
+<option value="Confirmed"
+${order.orderStatus==="Confirmed"?"selected":""}>
+Confirmed
+</option>
+
+<option value="Packed"
+${order.orderStatus==="Packed"?"selected":""}>
+Packed
+</option>
+
+<option value="Out for Delivery"
+${order.orderStatus==="Out for Delivery"?"selected":""}>
+Out for Delivery
+</option>
+
+<option value="Delivered"
+${order.orderStatus==="Delivered"?"selected":""}>
+Delivered
+</option>
+
+<option value="Cancelled"
+${order.orderStatus==="Cancelled"?"selected":""}>
+Cancelled
+</option>
+
+</select>
+
+</div>
+
+
+<!-- QUICK CONTACT -->
+
+<div class="flex flex-wrap gap-3 mt-4">
+
+
+<a
+href="tel:${order.phone}"
+class="bg-green-700 text-white px-5 py-3 rounded-xl font-bold">
+
+📞 Call Customer
+
+</a>
+
+
+<button
+onclick="notifyWhatsApp('${order.orderId}')"
+class="bg-green-500 hover:bg-green-600 text-white px-5 py-3 rounded-xl font-bold shadow-lg">
+
+📲 Click to Notify Order on WhatsApp
+
+</button>
+
+
+</div>
+
+
+</div>
+
+`).join("");
+
+updateAdminStats();
+
+}
+
+
+/* =========================
+UPDATE STATUS
+========================= */
+
+async function updateOrderStatus(orderId,status){
+
+const order=
+orders.find(o=>o.orderId===orderId);
+
+if(!order)return;
+
+try{
+
+const orderRef=
+window.firebaseRef(
+window.firebaseDB,
+"orders/"+orderId
+);
+
+await window.firebaseUpdate(
+orderRef,
+{
+orderStatus:status
+}
+);
+
+toast(
+"Order status updated to "+status
+);
+
+}catch(error){
+
+console.error(error);
+
+toast("Status update failed");
+
+}
+
+}
+
+
+/* =========================
+WHATSAPP NOTIFICATION
+========================= */
+
+function notifyWhatsApp(orderId){
+
+const order=
+orders.find(
+o=>o.orderId===orderId
+);
+
+if(!order){
+
+toast("❌ Order not found");
 
 return;
 
 }
 
 
-let farmer={
-name,
-phone,
-village,
-crop,
-createdAt:new Date().toISOString()
+let productText="";
+
+
+(order.items||[]).forEach((item,index)=>{
+
+productText+=
+`${index+1}. ${item.productName} × ${item.quantity} = ₹${item.itemTotal}\n`;
+
+});
+
+
+const message=
+`🌾 FARMERS MARKETPLACE HUB
+
+📦 NEW ORDER NOTIFICATION
+
+━━━━━━━━━━━━━━━━━━
+
+🆔 Order ID:
+${order.orderId}
+
+📅 Order Date:
+${new Date(order.orderDate).toLocaleString()}
+
+━━━━━━━━━━━━━━━━━━
+
+👤 CUSTOMER DETAILS
+
+Name: ${order.customerName}
+
+📱 Mobile:
+${order.phone}
+
+📧 Email:
+${order.customerEmail}
+
+━━━━━━━━━━━━━━━━━━
+
+🏠 DELIVERY ADDRESS
+
+${order.deliveryAddress}
+
+📍 City / Village:
+${order.city}
+
+📮 Pincode:
+${order.pincode}
+
+━━━━━━━━━━━━━━━━━━
+
+🛍️ ORDERED PRODUCTS
+
+${productText}
+━━━━━━━━━━━━━━━━━━
+
+💰 TOTAL AMOUNT:
+₹${order.totalAmount}
+
+💵 PAYMENT:
+${order.paymentStatus}
+
+🔄 ORDER STATUS:
+${order.orderStatus}
+
+━━━━━━━━━━━━━━━━━━
+
+Please process this order.
+
+🌾 Farmers Marketplace Hub
+Developed by Shrutika S. Kashid`;
+
+
+const adminWhatsAppNumber=
+"919403871428";
+
+
+const whatsappURL=
+"https://wa.me/"+
+adminWhatsAppNumber+
+"?text="+
+encodeURIComponent(message);
+
+
+window.open(
+whatsappURL,
+"_blank"
+);
+
+
+toast(
+"📲 WhatsApp order notification ready!"
+);
+
+}
+
+
+/* =========================
+FIREBASE ORDER LISTENER
+========================= */
+
+function startOrderListener(){
+
+if(!window.firebaseDB)return;
+
+const ordersRef=
+window.firebaseRef(
+window.firebaseDB,
+"orders"
+);
+
+window.firebaseOnValue(
+ordersRef,
+snapshot=>{
+
+const data=snapshot.val();
+
+if(!data){
+
+orders=[];
+
+}else{
+
+orders=
+Object.entries(data).map(
+([key,value])=>{
+
+return{
+
+...value,
+
+orderId:
+value.orderId||key
+
 };
 
+});
+
+}
+
+updateHomeStats();
+
+if(adminLoggedIn){
+
+loadAdminOrders();
+
+}
+
+renderOrders();
+
+
+if(
+adminLoggedIn &&
+orders.length>previousOrderCount
+){
+
+const latest=
+orders[orders.length-1];
+
+showNewOrderAlert(latest);
+
+}
+
+previousOrderCount=
+orders.length;
+
+},
+
+error=>{
+
+console.error(
+"Firebase order listener error:",
+error
+);
+
+}
+
+);
+
+}
+
+
+/* =========================
+NEW ORDER ALERT
+========================= */
+
+function showNewOrderAlert(order){
+
+if(!order)return;
+
+const alert=
+document.getElementById(
+"newOrderAlert"
+);
+
+const text=
+document.getElementById(
+"newOrderText"
+);
+
+text.innerText=
+`${order.customerName} placed an order of ₹${order.totalAmount}`;
+
+alert.classList.remove("hidden");
+
+toast("🔔 New order received!");
+
+}
+
+
+function hideOrderAlert(){
+
+document
+.getElementById("newOrderAlert")
+.classList.add("hidden");
+
+loadAdminOrders();
+
+}
+
+
+/* =========================
+ADMIN STATS
+========================= */
+
+function updateAdminStats(){
+
+const sales=
+orders.reduce(
+(sum,order)=>
+sum+Number(order.totalAmount||0),
+0
+);
+
+document.getElementById(
+"adminOrderCount"
+).innerText=
+orders.length;
+
+document.getElementById(
+"adminFarmerCount"
+).innerText=
+farmers.length;
+
+document.getElementById(
+"adminProductCount"
+).innerText=
+products.length;
+
+document.getElementById(
+"adminSales"
+).innerText=
+"₹"+sales;
+
+}
+
+
+/* =========================
+HOME STATS
+========================= */
+
+function updateHomeStats(){
+
+document.getElementById(
+"farmerStat"
+).innerText=
+farmers.length;
+
+document.getElementById(
+"productStat"
+).innerText=
+products.length;
+
+document.getElementById(
+"orderStat"
+).innerText=
+orders.length;
+
+}
+
+
+/* =========================
+FARMER
+========================= */
+
+async function registerFarmer(){
+
+const name=
+document.getElementById(
+"farmerName"
+).value.trim();
+
+const phone=
+document.getElementById(
+"farmerPhone"
+).value.trim();
+
+const village=
+document.getElementById(
+"farmerVillage"
+).value.trim();
+
+const crop=
+document.getElementById(
+"farmerCrop"
+).value.trim();
+
+if(!name||!phone||!village||!crop){
+
+toast(
+"Please fill all farmer details"
+);
+
+return;
+
+}
+
+const farmer={
+
+name:name,
+phone:phone,
+village:village,
+crop:crop,
+createdAt:new Date().toISOString()
+
+};
 
 try{
 
-if(window.db){
+const farmerRef=
+window.firebaseRef(
+window.firebaseDB,
+"farmers"
+);
 
-let r=window.dbRef(window.db,"farmers");
+const newRef=
+window.firebasePush(farmerRef);
 
-let newFarmer=window.dbPush(r);
-
-await window.dbSet(newFarmer,farmer);
-
-}
+await window.firebaseSet(
+newRef,
+farmer
+);
 
 farmers.push(farmer);
 
@@ -1627,194 +3220,238 @@ localStorage.setItem(
 JSON.stringify(farmers)
 );
 
+document.getElementById(
+"farmerName"
+).value="";
 
-document.getElementById("farmerName").value="";
-document.getElementById("farmerPhone").value="";
-document.getElementById("farmerVillage").value="";
-document.getElementById("farmerCrop").value="";
+document.getElementById(
+"farmerPhone"
+).value="";
 
+document.getElementById(
+"farmerVillage"
+).value="";
 
-toast("🎉 Farmer registered successfully!");
+document.getElementById(
+"farmerCrop"
+).value="";
 
-updateDashboard();
+toast(
+"🎉 Farmer registered successfully!"
+);
 
-}catch(e){
+updateHomeStats();
 
-console.error(e);
+}catch(error){
 
-toast("Could not save farmer");
+console.error(error);
+
+toast(
+"Farmer registration failed"
+);
 
 }
 
 }
 
 
-/* ADD PRODUCT */
+/* =========================
+ADD PRODUCT
+========================= */
 
 async function addProduct(){
 
-let name=
-document.getElementById("newProductName").value.trim();
+const name=
+document.getElementById(
+"newProductName"
+).value.trim();
 
-let price=
-Number(document.getElementById("newProductPrice").value);
+const price=
+Number(
+document.getElementById(
+"newProductPrice"
+).value
+);
 
-let category=
-document.getElementById("newProductCategory").value;
+const category=
+document.getElementById(
+"newProductCategory"
+).value;
 
-let farmer=
-document.getElementById("newProductFarmer").value.trim();
-
+const farmer=
+document.getElementById(
+"newProductFarmer"
+).value.trim();
 
 if(!name||!price||!farmer){
 
-toast("Please fill product details");
+toast(
+"Please fill product details"
+);
 
 return;
 
 }
 
+const emoji={
 
-let emoji={
 vegetable:"🥬",
 fruit:"🍎",
 grain:"🌾",
 dairy:"🥛"
+
 }[category];
 
+const product={
 
-let product={
 id:Date.now(),
-name,
-price,
-category,
-emoji,
-farmer
+name:name,
+price:price,
+category:category,
+emoji:emoji,
+farmer:farmer
+
 };
-
-
-products.push(product);
 
 try{
 
-if(window.db){
+const productRef=
+window.firebaseRef(
+window.firebaseDB,
+"products"
+);
 
-let r=window.dbRef(window.db,"products");
+const newRef=
+window.firebasePush(productRef);
 
-let newProduct=window.dbPush(r);
+await window.firebaseSet(
+newRef,
+product
+);
 
-await window.dbSet(newProduct,product);
+products.push(product);
 
-}
+document.getElementById(
+"newProductName"
+).value="";
 
-}catch(e){
+document.getElementById(
+"newProductPrice"
+).value="";
 
-console.error(e);
+document.getElementById(
+"newProductFarmer"
+).value="";
 
-}
-
-
-document.getElementById("newProductName").value="";
-document.getElementById("newProductPrice").value="";
-document.getElementById("newProductFarmer").value="";
-
-
-toast("✅ Product added!");
+toast(
+"✅ Product added successfully!"
+);
 
 renderProducts();
 
-updateDashboard();
+updateHomeStats();
+
+}catch(error){
+
+console.error(error);
+
+toast(
+"Product could not be added"
+);
+
+}
 
 }
 
 
-/* CONTACT */
+/* =========================
+CONTACT
+========================= */
 
 async function sendMessage(){
 
-let name=
-document.getElementById("contactName").value.trim();
+const name=
+document.getElementById(
+"contactName"
+).value.trim();
 
-let email=
-document.getElementById("contactEmail").value.trim();
+const email=
+document.getElementById(
+"contactEmail"
+).value.trim();
 
-let message=
-document.getElementById("contactMessage").value.trim();
-
+const message=
+document.getElementById(
+"contactMessage"
+).value.trim();
 
 if(!name||!email||!message){
 
-toast("Please fill all fields");
+toast(
+"Please fill all fields"
+);
 
 return;
 
 }
 
+const data={
 
-let data={
-name,
-email,
-message,
+name:name,
+email:email,
+message:message,
 createdAt:new Date().toISOString()
-};
 
+};
 
 try{
 
-if(window.db){
+const messageRef=
+window.firebaseRef(
+window.firebaseDB,
+"messages"
+);
 
-let r=window.dbRef(window.db,"messages");
+const newRef=
+window.firebasePush(messageRef);
 
-let newMessage=window.dbPush(r);
+await window.firebaseSet(
+newRef,
+data
+);
 
-await window.dbSet(newMessage,data);
+document.getElementById(
+"contactName"
+).value="";
+
+document.getElementById(
+"contactEmail"
+).value="";
+
+document.getElementById(
+"contactMessage"
+).value="";
+
+toast(
+"✅ Message sent successfully!"
+);
+
+}catch(error){
+
+console.error(error);
+
+toast(
+"Message could not be sent"
+);
 
 }
-
-document.getElementById("contactName").value="";
-document.getElementById("contactEmail").value="";
-document.getElementById("contactMessage").value="";
-
-
-toast("✅ Message sent successfully!");
-
-}catch(e){
-
-console.error(e);
-
-toast("Message could not be sent");
-
-}
-
-}
-
-
-/* DASHBOARD */
-
-function updateDashboard(){
-
-document.getElementById("dashProducts").innerText=
-products.length;
-
-document.getElementById("dashFarmers").innerText=
-farmers.length;
-
-document.getElementById("dashOrders").innerText=
-orders.length;
-
-document.getElementById("dashCart").innerText=
-cart.reduce((a,b)=>a+b.qty,0);
-
-document.getElementById("farmerStat").innerText=
-farmers.length;
-
-document.getElementById("orderStat").innerText=
-orders.length;
 
 }
 
 
-/* INIT */
+/* =========================
+INITIALIZE
+========================= */
 
 renderProducts();
 
@@ -1822,9 +3459,30 @@ updateCart();
 
 updateUser();
 
-updateDashboard();
+updateHomeStats();
+
+
+if(
+sessionStorage.getItem(
+"adminLoggedIn"
+)==="true"
+){
+
+adminLoggedIn=true;
+
+showAdminPanel();
+
+}
+
+
+setTimeout(()=>{
+
+startOrderListener();
+
+},1500);
 
 </script>
 
 </body>
+
 </html>
